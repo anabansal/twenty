@@ -11,6 +11,7 @@ import {
 } from 'src/engine/core-modules/auth/auth.exception';
 import { AuthGraphqlApiExceptionFilter } from 'src/engine/core-modules/auth/filters/auth-graphql-api-exception.filter';
 import { AccessTokenService } from 'src/engine/core-modules/auth/token/services/access-token.service';
+import { assertWorkspaceIsNotSuspendedOrThrow } from 'src/engine/core-modules/auth/utils/assert-workspace-is-not-suspended-or-throw.util';
 import { getAuthExceptionRestStatus } from 'src/engine/core-modules/auth/utils/get-auth-exception-rest-status.util';
 import { ExceptionHandlerService } from 'src/engine/core-modules/exception-handler/exception-handler.service';
 import { ErrorCode } from 'src/engine/core-modules/graphql/utils/graphql-errors.util';
@@ -129,6 +130,8 @@ export class MiddlewareService {
     if (!isNonEmptyString(data.workspace.databaseSchema)) {
       throw new Error('No data sources found');
     }
+
+    assertWorkspaceIsNotSuspendedOrThrow(data.workspace);
 
     bindDataToRequestObject(data, request, metadataVersion);
   }
